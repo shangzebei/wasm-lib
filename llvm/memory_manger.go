@@ -38,7 +38,7 @@ func (m *VmManger) Init(vm *exec.VirtualMachine) {
 	m.STACK_BASE = m.STACKTOP
 	m.STACK_MAX = m.STACK_BASE + m.TOTAL_STACK
 	m.DYNAMIC_BASE = m.AlignMemory(m.STACK_MAX)
-
+	binary.LittleEndian.PutUint32(m.vm.Memory[m.DYNAMICTOP_PTR:m.DYNAMICTOP_PTR+4], uint32(m.DYNAMIC_BASE))
 	WASM_CALL_CTORS(vm)
 
 	wasm.AddFunc(m, "Sbrk")

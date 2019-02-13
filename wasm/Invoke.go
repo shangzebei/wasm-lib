@@ -86,7 +86,7 @@ func RegFunc(ins interface{}) {
 			rem := get.Func.Call([]reflect.Value{reflect.ValueOf(ins), reflect.ValueOf(m.MethodName)})
 			orgMethodName = rem[0].String()
 		}
-		types.FuncList[orgMethodName] = m
+		types.FuncList[FirstCharLower(orgMethodName)] = m
 
 	}
 
@@ -99,7 +99,7 @@ func AddFunc(ins interface{}, funName string) {
 	method, find := reflect.TypeOf(ins).MethodByName(funName)
 	if find {
 		m := GetMethodMeta(ins, method)
-		types.FuncList[m.MethodName] = m
+		types.FuncList[FirstCharLower(m.MethodName)] = m
 	}
 }
 
@@ -116,7 +116,7 @@ func GetMethodMeta(ins interface{}, method reflect.Method) *types.MethodType {
 	}
 	return &types.MethodType{
 		ins,
-		FirstCharLower(method.Name),
+		method.Name,
 		med,
 		ret,
 	}
