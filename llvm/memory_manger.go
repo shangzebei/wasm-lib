@@ -20,6 +20,7 @@ type VmManger struct {
 	STACK_MAX      int64 //
 	staticSealed   int64 //
 	TOTAL_MEMORY   int64
+	GLOBAL_BASE    int64
 	DYNAMIC_BASE   int64
 	DYNAMICTOP_PTR int64
 }
@@ -29,11 +30,11 @@ var STACK_ALIGN = int64(16)
 func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 	m.vm = vm
 	wasm.SetVMemory(vMem)
-	//m.TOTAL_STACK = TOTAL_STACK(vm)||5242880;
-	//m.TOTAL_MEMORY = TOTAL_MEMORY(vm)||16777216;
-	m.TOTAL_STACK = 5242880
+	m.GLOBAL_BASE = 1024
+	m.TOTAL_STACK = HEAP_BASE(vm) - DATA_END(vm)
 	m.TOTAL_MEMORY = m.GetTotalMemory()
-	m.STATICTOP = 1024 + 4480
+	//m.STATICTOP = m.GLOBAL_BASE + 4560
+	m.STATICTOP = m.GLOBAL_BASE + DATA_END(vm)
 	m.DYNAMICTOP_PTR = m.StaticAlloc(4)
 	m.STACKTOP = m.AlignMemory(m.STATICTOP)
 	m.STACK_BASE = m.STACKTOP

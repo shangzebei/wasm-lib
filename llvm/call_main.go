@@ -20,7 +20,6 @@ func CallMain(args ...int64) {
 		&lib.SystemCall{},
 		&lib.Thread{},
 	)
-
 	input, err := ioutil.ReadFile("/Users/shang/Documents/demo/a.out.wasm")
 	if err != nil {
 		panic(err)
@@ -37,6 +36,14 @@ func CallMain(args ...int64) {
 	//fmt.Println(string(b), e)
 
 	wasm.RunFunc(wm, "main")
+
 	//HEAP32[argv >> 2] = allocateUTF8OnStack(Module["thisProgram"]);
 
+}
+func toUtf8(iso8859_1_buf []byte) string {
+	buf := make([]rune, len(iso8859_1_buf))
+	for i, b := range iso8859_1_buf {
+		buf[i] = rune(b)
+	}
+	return string(buf)
 }

@@ -39,7 +39,6 @@ func (s *SystemCall) Syscall140(a int, b int) int {
 }
 func (s *SystemCall) Syscall146(a int, b int) int {
 	//fmt.Printf("Syscall146 a = %d  b =%d \n", a, b)
-	fmt.Println(string(s.Vm.Memory[5248392 : 5248392+100]))
 	s.varargs = b
 	stream := s.get()
 	iov := s.get()
