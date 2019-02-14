@@ -23,7 +23,7 @@ func (h *Http) Http_get(url string) int64 {
 	if err != nil {
 		return 0
 	}
-	p := wasm.FindfreeSpece(h.Vm, int64(len(b)))
+	p := wasm.GetVMemory().Malloc(int64(len(b)))
 	copy(h.Vm.Memory[p:], b)
 	return p
 }
@@ -41,7 +41,7 @@ func (h *Http) Http_post(url string, contentType string, body string) int64 {
 		println(err)
 		return 0
 	}
-	p := wasm.FindfreeSpece(h.Vm, int64(len(b)))
+	p := wasm.GetVMemory().Malloc(int64(len(b)))
 	copy(h.Vm.Memory[p:], b)
 	return p
 }

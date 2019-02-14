@@ -63,6 +63,14 @@ type FuncOnly struct {
 }
 
 /**
+ * may Impl
+ */
+type VMemory interface {
+	Malloc(size int64) int64 //this method alloc
+	Free(point int64) int64  //this method free
+}
+
+/**
  * get the real func,by the runtime
  */
 func (r *RegInterface) Get(name string) string {

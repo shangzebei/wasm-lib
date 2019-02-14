@@ -30,7 +30,7 @@ func CallMain(args ...int64) {
 	}
 	wm, _ := wasm.LoadWMFromBytes(input)
 	m := VmManger{}
-	m.Init(wm)
+	m.Init(wm, &ExportPre{})
 	argc := len(args) + 1
 	argv := StackAlloc(wm, (argc+1)*4)
 	pos := (argv >> 2) * 4

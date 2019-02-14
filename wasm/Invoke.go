@@ -193,7 +193,6 @@ func GetString(ptr int64, vm *exec.VirtualMachine) string {
 		panic("nil point")
 		return ""
 	}
-
 	msg := vm.Memory[ptr:]
 	for index, value := range msg {
 		if value == 0 {
@@ -206,9 +205,9 @@ func GetString(ptr int64, vm *exec.VirtualMachine) string {
 
 func SetString(s string, vm *exec.VirtualMachine) int64 {
 	msg := vm.Memory
-	p := FindfreeSpece(vm, int64(len(s)))
+	p := GetVMemory().Malloc(int64(len(s)))
 	copy(msg[p:], []byte(s))
-	return p
+	return 0
 }
 
 func FirstCharLower(s string) string {

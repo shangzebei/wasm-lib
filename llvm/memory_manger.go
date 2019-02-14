@@ -26,8 +26,9 @@ type VmManger struct {
 
 var STACK_ALIGN = int64(16)
 
-func (m *VmManger) Init(vm *exec.VirtualMachine) {
+func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 	m.vm = vm
+	wasm.SetVMemory(vMem)
 	//m.TOTAL_STACK = TOTAL_STACK(vm)||5242880;
 	//m.TOTAL_MEMORY = TOTAL_MEMORY(vm)||16777216;
 	m.TOTAL_STACK = 5242880
