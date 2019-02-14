@@ -32,7 +32,7 @@ func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 	//m.TOTAL_STACK = TOTAL_STACK(vm)||5242880;
 	//m.TOTAL_MEMORY = TOTAL_MEMORY(vm)||16777216;
 	m.TOTAL_STACK = 5242880
-	m.TOTAL_MEMORY = 16777216
+	m.TOTAL_MEMORY = m.GetTotalMemory()
 	m.STATICTOP = 1024 + 4480
 	m.DYNAMICTOP_PTR = m.StaticAlloc(4)
 	m.STACKTOP = m.AlignMemory(m.STATICTOP)
@@ -58,12 +58,13 @@ func (m *VmManger) GetTotalMemory() int64 {
 //	return ret
 //}
 
-func (m *VmManger) abortOnCannotGrowMemory() {
+func (m *VmManger) abortOnCannotGrowMemory() bool {
 	panic("Cannot enlarge memory arrays. Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value " + ", (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ")
+	return false
 }
 
-func (m *VmManger) enlargeMemory() {
-	m.abortOnCannotGrowMemory()
+func (m *VmManger) enlargeMemory() bool {
+	return m.abortOnCannotGrowMemory()
 }
 
 func (m *VmManger) StaticAlloc(size int64) int64 {
@@ -94,23 +95,21 @@ func (v *VmManger) Sbrk(increment int) int32 {
 
 	oldDynamicTop = int32(binary.LittleEndian.Uint32(v.vm.Memory[v.DYNAMICTOP_PTR : v.DYNAMICTOP_PTR+4]))
 	newDynamicTop = oldDynamicTop + int32(increment)
-	//if ((increment | 0) > 0 & (newDynamicTop | 0) < (oldDynamicTop | 0) | (newDynamicTop | 0) < 0) {
-	//	abortOnCannotGrowMemory() | 0;
+	//if (increment | 0) > 0 & (newDynamicTop | 0) < (oldDynamicTop | 0) | (newDynamicTop | 0) < 0) {
+	//	v.abortOnCannotGrowMemory() | 0;
 	//	___setErrNo(12);
 	//	return -1
 	//}
 	//HEAP32[DYNAMICTOP_PTR >> 2] = newDynamicTop
 	binary.LittleEndian.PutUint32(v.vm.Memory[v.DYNAMICTOP_PTR:v.DYNAMICTOP_PTR+4], uint32(newDynamicTop))
 
-	//totalMemory = int32(v.GetTotalMemory())
-	//if ((newDynamicTop | 0) > (totalMemory | 0)) {
-	//	if ((enlargeMemory() | 0) == 0) {
-	//		HEAP32[DYNAMICTOP_PTR>>2] = oldDynamicTop;
-	//		___setErrNo(12);
-	//		return -1
-	//	}
-	//}
-	return oldDynamicTop
+	totalMemory := int32(v.GetTotalMemory())
+	if (newDynamicTop | 0) > (totalMemory | 0) {
+		v.enlargeMemory()
+		//HEAP32[DYNAMICTOP_PTR>>2] = oldDynamicTop
+		//___setErrNo(12);
+	}
+	return oldDynamicTop | 0
 }
 func (v *VmManger) Brk(newDynamicTop int) int {
 	newDynamicTop = newDynamicTop | 0

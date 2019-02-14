@@ -84,7 +84,9 @@ func RegFunc(ins interface{}) {
 		if IsInterface(ins, types.RegInterface{}) {
 			get, _ := fooType.MethodByName("Get")
 			rem := get.Func.Call([]reflect.Value{reflect.ValueOf(ins), reflect.ValueOf(m.MethodName)})
-			orgMethodName = rem[0].String()
+			if len(rem) != 0 && rem[0].String() != "" {
+				orgMethodName = rem[0].String()
+			}
 		}
 		types.FuncList[FirstCharLower(orgMethodName)] = m
 
@@ -211,6 +213,9 @@ func SetString(s string, vm *exec.VirtualMachine) int64 {
 }
 
 func FirstCharLower(s string) string {
+	if "" == s {
+		log.Fatalf("err s %s", s)
+	}
 	return strings.ToLower(s[0:1]) + s[1:]
 }
 func FirstCharUpper(s string) string {

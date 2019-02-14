@@ -14,15 +14,15 @@ type SystemCall struct {
 }
 
 func (s *SystemCall) Init() {
-	s.Replace("Syscall6", "__syscall6")
-	s.Replace("Syscall54", "__syscall54")
+	s.Replace("Syscall6", "__syscall6")   // close
+	s.Replace("Syscall54", "__syscall54") //ioctl
 	s.Replace("Syscall140", "__syscall140")
 	s.Replace("Syscall146", "__syscall146")
 }
 
 //extern int __syscall6(int a,int b);
 func (*SystemCall) Syscall6(a int, b int) int {
-	//// close
+	// close
 	fmt.Printf("Syscall6 a = %d,b =%d \n", a, b)
 	return 0
 }
@@ -39,7 +39,7 @@ func (s *SystemCall) Syscall140(a int, b int) int {
 }
 func (s *SystemCall) Syscall146(a int, b int) int {
 	//fmt.Printf("Syscall146 a = %d  b =%d \n", a, b)
-	//fmt.Println(s.Vm.Memory[b : b+100])
+	fmt.Println(string(s.Vm.Memory[5248392 : 5248392+100]))
 	s.varargs = b
 	stream := s.get()
 	iov := s.get()
