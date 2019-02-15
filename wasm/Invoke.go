@@ -16,6 +16,7 @@ import (
  */
 func RegisterFunc(ins ...interface{}) {
 	for _, value := range ins {
+		types.InstanceList[strings.ToLower(reflect.TypeOf(value).Elem().Name())] = value
 		if !IsInterface(value, types.PreFuncInf{}) {
 			RegFunc(value)
 		}
@@ -134,6 +135,10 @@ func GetFuncName(s string) string {
 	}
 }
 
+func GetInstance(name string) interface{} {
+	return types.InstanceList[strings.ToLower(name)]
+}
+
 func InvokeFunc(methInfo interface{}) func(vm *exec.VirtualMachine) int64 {
 	metype := methInfo.(*types.MethodType)
 	return func(vm *exec.VirtualMachine) int64 {
@@ -159,6 +164,7 @@ func InvokeFunc(methInfo interface{}) func(vm *exec.VirtualMachine) int64 {
 				param[a] = reflect.ValueOf(math.Float32frombits(uint32(frame.Locals[wasmParamIndex])))
 			default:
 				if a == 0 {
+					//GetInstance
 					v := reflect.ValueOf(metype.This)
 					param[a] = v
 					vk := v.Elem().FieldByName("Vm")

@@ -1,12 +1,13 @@
 package lib
 
 import (
-	"fmt"
+	"sync"
 	"wasmgo/types"
 )
 
 type Thread struct {
 	types.RegInterface
+	m sync.Mutex
 }
 
 func (t *Thread) Init() {
@@ -15,10 +16,10 @@ func (t *Thread) Init() {
 }
 
 func (t *Thread) Lock(a int) {
-	fmt.Println("no Lock")
+	t.m.Lock()
 }
 func (t *Thread) UnLock(a int) {
-	fmt.Println("no UnLock")
+	t.m.Unlock()
 }
 func (t *Thread) Pthread_mutex_destroy() {
 

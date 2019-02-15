@@ -46,3 +46,7 @@ func (e *ExportPre) Malloc(size int64) int64 {
 func (e *ExportPre) Free(point int64) int64 {
 	return wasm.RunFunc(e.Vm, "free")
 }
+
+func FFLUSH(vm *exec.VirtualMachine, x int) int64 {
+	return wasm.RunFunc(vm, "fflush", int64(x))
+}

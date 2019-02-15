@@ -10,10 +10,15 @@ type SystemCall struct {
 	types.VMInterface
 	types.RegInterface
 	varargs int
-	buffers []byte
+	Buffers []interface{}
 }
 
 func (s *SystemCall) Init() {
+	s.Buffers = make([]interface{}, 3)
+	s.Buffers[0] = nil
+	s.Buffers[1] = make([]byte, 0)
+	s.Buffers[2] = make([]byte, 0)
+
 	s.Replace("Syscall6", "__syscall6")   // close
 	s.Replace("Syscall54", "__syscall54") //ioctl
 	s.Replace("Syscall140", "__syscall140")
@@ -65,11 +70,14 @@ func (s *SystemCall) get() int {
 	return int(binary.LittleEndian.Uint32(ret))
 
 }
+
 func (s *SystemCall) printChar(stream int, curr int) {
+	var buff = s.Buffers[stream].([]byte)
 	if curr == 0 || curr == 10 {
-		fmt.Println(string(s.buffers))
-		s.buffers = nil
+		fmt.Println(string(buff))
+		buff = nil
 	} else {
-		s.buffers = append(s.buffers, byte(curr))
+		buff = append(buff, byte(curr))
 	}
+	s.Buffers[stream] = buff
 }

@@ -7,6 +7,7 @@ import (
 )
 
 func CallMain(args ...int64) {
+
 	wasm.RegisterFunc(
 		&ExportPre{},
 		&lib.Log{},
@@ -26,6 +27,9 @@ func CallMain(args ...int64) {
 	}
 	wm, _ := wasm.LoadWMFromBytes(input)
 	m := VmManger{}
+	defer func() {
+		m.CheckUnflushedContent()
+	}()
 	m.Init(wm, &ExportPre{})
 	argc := len(args) + 1
 	argv := StackAlloc(wm, (argc+1)*4)
@@ -39,11 +43,4 @@ func CallMain(args ...int64) {
 
 	//HEAP32[argv >> 2] = allocateUTF8OnStack(Module["thisProgram"]);
 
-}
-func toUtf8(iso8859_1_buf []byte) string {
-	buf := make([]rune, len(iso8859_1_buf))
-	for i, b := range iso8859_1_buf {
-		buf[i] = rune(b)
-	}
-	return string(buf)
 }

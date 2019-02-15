@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/perlin-network/life/exec"
 	"math"
+	"wasmgo/runtime"
 	"wasmgo/types"
 	"wasmgo/wasm"
 )
@@ -62,6 +63,14 @@ func (m *VmManger) GetTotalMemory() int64 {
 func (m *VmManger) abortOnCannotGrowMemory() bool {
 	panic("Cannot enlarge memory arrays. Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value " + ", (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ")
 	return false
+}
+
+func (m *VmManger) CheckUnflushedContent() {
+	FFLUSH(m.vm, 0)
+	s := wasm.GetInstance("SystemCall").(*lib.SystemCall)
+	if len(s.Buffers[1].([]byte)) != 0 || len(s.Buffers[2].([]byte)) != 0 {
+		panic("stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the FAQ), or make sure to emit a newline when you printf etc.")
+	}
 }
 
 func (m *VmManger) enlargeMemory() bool {
