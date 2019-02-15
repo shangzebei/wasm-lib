@@ -23,6 +23,7 @@ func (s *SystemCall) Init() {
 	s.Replace("Syscall54", "__syscall54") //ioctl
 	s.Replace("Syscall140", "__syscall140")
 	s.Replace("Syscall146", "__syscall146")
+	s.Replace("Cxa_atexit", "__cxa_atexit")
 }
 
 //extern int __syscall6(int a,int b);
@@ -31,6 +32,11 @@ func (*SystemCall) Syscall6(a int, b int) int {
 	fmt.Printf("Syscall6 a = %d,b =%d \n", a, b)
 	return 0
 }
+
+func (*SystemCall) Cxa_atexit() {
+	fmt.Println("atexit() called, but EXIT_RUNTIME is not set, so atexits() will not be called. set EXIT_RUNTIME to 1 (see the FAQ)")
+}
+
 func (s *SystemCall) Syscall54(a int, b int) int {
 	s.varargs = b
 	// ioctl

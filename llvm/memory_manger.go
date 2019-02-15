@@ -42,6 +42,7 @@ func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 	m.STACK_MAX = m.STACK_BASE + m.TOTAL_STACK
 	m.DYNAMIC_BASE = m.AlignMemory(m.STACK_MAX)
 	binary.LittleEndian.PutUint32(m.vm.Memory[m.DYNAMICTOP_PTR:m.DYNAMICTOP_PTR+4], uint32(m.DYNAMIC_BASE))
+
 	WASM_CALL_CTORS(vm)
 
 	wasm.AddFunc(m, "Sbrk")
@@ -69,7 +70,7 @@ func (m *VmManger) CheckUnflushedContent() {
 	FFLUSH(m.vm, 0)
 	s := wasm.GetInstance("SystemCall").(*lib.SystemCall)
 	if len(s.Buffers[1].([]byte)) != 0 || len(s.Buffers[2].([]byte)) != 0 {
-		panic("stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the FAQ), or make sure to emit a newline when you printf etc.")
+		fmt.Println("stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the FAQ), or make sure to emit a newline when you printf etc.")
 	}
 }
 

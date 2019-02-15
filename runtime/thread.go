@@ -47,7 +47,3 @@ func (t *Thread) Pthread_cond_broadcast(x int) int {
 	x = x | 0
 	return 0
 }
-
-//func ___cxa_atexit() {
-// return _atexit.apply(null, arguments)
-//}

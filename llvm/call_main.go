@@ -7,9 +7,13 @@ import (
 )
 
 func CallMain(args ...int64) {
-
+	//f, err := os.Open("logfile")
+	//if err != nil {
+	//}
+	//log.SetOutput(f)
+	//log.SetOutput(ioutil.Discard)
 	wasm.RegisterFunc(
-		&ExportPre{},
+		&lib.Exception{},
 		&lib.Log{},
 		&lib.Math{},
 		&lib.MemoryInterface{},
@@ -30,7 +34,7 @@ func CallMain(args ...int64) {
 	defer func() {
 		m.CheckUnflushedContent()
 	}()
-	m.Init(wm, &ExportPre{})
+	m.Init(wm, &VMalloc{wm})
 	argc := len(args) + 1
 	argv := StackAlloc(wm, (argc+1)*4)
 	pos := (argv >> 2) * 4
@@ -38,6 +42,9 @@ func CallMain(args ...int64) {
 
 	//b, e := json.Marshal(&types.FuncList)
 	//fmt.Println(string(b), e)
+
+	//fmt.Println(ZSt18uncaught_exceptionv(wm))
+	//fmt.Println(wasm.GetVMemory().Malloc(4))
 
 	wasm.RunFunc(wm, "main")
 

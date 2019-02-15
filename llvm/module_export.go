@@ -2,13 +2,12 @@ package llvm
 
 import (
 	"github.com/perlin-network/life/exec"
-	"wasmgo/types"
+	"log"
 	"wasmgo/wasm"
 )
 
-type ExportPre struct {
-	types.PreFuncInf
-	types.VMInterface
+type VMalloc struct {
+	vm *exec.VirtualMachine
 }
 
 func StackAlloc(vm *exec.VirtualMachine, len int) int64 {
@@ -39,14 +38,24 @@ func DATA_END(vm *exec.VirtualMachine) int64 {
 	return wasm.GetExport(vm, "__data_end")
 }
 
-func (e *ExportPre) Malloc(size int64) int64 {
-	return wasm.RunFunc(e.Vm, "MALLOC")
+func (v *VMalloc) Malloc(size int64) int64 {
+	if v.vm == nil {
+		log.Fatalln("error e.Vm==nil")
+	}
+	return wasm.RunFunc(v.vm, "malloc", size)
 }
 
-func (e *ExportPre) Free(point int64) int64 {
-	return wasm.RunFunc(e.Vm, "free")
+func (v *VMalloc) Free(point int64) int64 {
+	if v.vm == nil {
+		log.Fatalln("error e.Vm==nil")
+	}
+	return wasm.RunFunc(v.vm, "free", point)
 }
 
 func FFLUSH(vm *exec.VirtualMachine, x int) int64 {
 	return wasm.RunFunc(vm, "fflush", int64(x))
+}
+
+func ZSt18uncaught_exceptionv(vm *exec.VirtualMachine) int64 {
+	return wasm.RunFunc(vm, "_ZSt18uncaught_exceptionv")
 }
