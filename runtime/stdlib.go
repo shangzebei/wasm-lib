@@ -5,9 +5,16 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"wasmgo/types"
 )
 
 type StdLib struct {
+	types.RegInterface
+}
+
+func (s *StdLib) Init() {
+	s.Replace("BuildEnvironment", "__buildEnvironment")
+
 }
 
 //double atof(const char *str)
@@ -83,4 +90,7 @@ func (*StdLib) Abort() {
 //char *getenv(char *envvar);
 func (*StdLib) Getenv(envvar string) string {
 	return os.Getenv(envvar)
+}
+func (*StdLib) BuildEnvironment(environ int64) {
+	//fmt.Println(environ)
 }

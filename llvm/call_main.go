@@ -2,6 +2,7 @@ package llvm
 
 import (
 	"io/ioutil"
+	"log"
 	"wasmgo/runtime"
 	"wasmgo/wasm"
 )
@@ -11,7 +12,7 @@ func CallMain(args ...int64) {
 	//if err != nil {
 	//}
 	//log.SetOutput(f)
-	//log.SetOutput(ioutil.Discard)
+	log.SetOutput(ioutil.Discard)
 	wasm.RegisterFunc(
 		&lib.Exception{},
 		&lib.Log{},
@@ -44,7 +45,6 @@ func CallMain(args ...int64) {
 	//fmt.Println(string(b), e)
 
 	//fmt.Println(ZSt18uncaught_exceptionv(wm))
-	//fmt.Println(wasm.GetVMemory().Malloc(4))
 
 	wasm.RunFunc(wm, "main")
 
