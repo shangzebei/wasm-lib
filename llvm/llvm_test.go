@@ -6,6 +6,6 @@ import (
 
 func TestVmRun(t *testing.T) {
 
-	CallMain()
+	CallMain("/Users/shang/Documents/demo/a.out.wasm")
 
 }

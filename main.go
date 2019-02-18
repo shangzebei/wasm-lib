@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"io/ioutil"
+	"log"
+	"os"
+	"wasmgo/llvm"
+)
 
 func main() {
-	fmt.Printf("hello")
+	log.SetOutput(ioutil.Discard)
+	arg := os.Args
+	llvm.CallMain(arg[1])
 }

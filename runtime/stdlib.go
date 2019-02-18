@@ -76,17 +76,6 @@ func (*StdLib) Abort() {
 	os.Exit(0)
 }
 
-//int sbrk(void *addr);
-//func (*StdLib) Sbrk(increment int) int {
-//	log.Printf("############# %d",increment)
-//	//increment = increment | 0
-//	//var oldDynamicTop = 0;
-//	//var oldDynamicTopOnChange = 0;
-//	//var newDynamicTop = 0;
-//	//var totalMemory = 0;
-//	return -1
-//}
-
 //char *getenv(char *envvar);
 func (*StdLib) Getenv(envvar string) string {
 	return os.Getenv(envvar)

@@ -2,17 +2,16 @@ package llvm
 
 import (
 	"io/ioutil"
-	"log"
 	"wasmgo/runtime"
 	"wasmgo/wasm"
 )
 
-func CallMain(args ...int64) {
+func CallMain(wasmFile string, args ...int64) {
 	//f, err := os.Open("logfile")
 	//if err != nil {
 	//}
 	//log.SetOutput(f)
-	log.SetOutput(ioutil.Discard)
+
 	wasm.RegisterFunc(
 		&lib.Exception{},
 		&lib.Log{},
@@ -26,7 +25,7 @@ func CallMain(args ...int64) {
 		&lib.SystemCall{},
 		&lib.Thread{},
 	)
-	input, err := ioutil.ReadFile("/Users/shang/Documents/demo/a.out.wasm")
+	input, err := ioutil.ReadFile(wasmFile)
 	if err != nil {
 		panic(err)
 	}
