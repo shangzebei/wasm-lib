@@ -120,7 +120,7 @@ func (v *VmManger) Sbrk(increment int) int32 {
 		//HEAP32[DYNAMICTOP_PTR>>2] = oldDynamicTop
 		//___setErrNo(12);
 	}
-	return oldDynamicTop | 0
+	return newDynamicTop | 0
 }
 func (v *VmManger) Brk(newDynamicTop int) int {
 	newDynamicTop = newDynamicTop | 0

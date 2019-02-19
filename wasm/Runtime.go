@@ -68,7 +68,7 @@ func LoadWMFromBytes(code []byte) (*exec.VirtualMachine, error) {
 	return vm, err
 }
 
-func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
+func RunMainFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	entryID, ok := vm.GetFunctionExport(name)
 	if !ok {
 		fmt.Printf("Entry function %s not found; starting from 0.\n", name)
@@ -84,6 +84,21 @@ func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	return ret
 }
 
+func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
+	entryID, ok := vm.GetFunctionExport(name)
+	aa := vm.CopyNewVm()
+	if !ok {
+		fmt.Printf("Entry function %s not found; starting from 0.\n", name)
+		entryID = 0
+	}
+	ret, err := aa.Run(entryID, params...)
+
+	if err != nil {
+		vm.PrintStackTrace()
+		panic(err)
+	}
+	return ret
+}
 func GetExport(vm *exec.VirtualMachine, name string) int64 {
 	entryID, ok := vm.GetGlobalExport(name)
 	if !ok {

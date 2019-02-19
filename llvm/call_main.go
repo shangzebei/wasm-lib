@@ -1,6 +1,7 @@
 package llvm
 
 import (
+	"fmt"
 	"io/ioutil"
 	"wasmgo/runtime"
 	"wasmgo/wasm"
@@ -42,10 +43,13 @@ func CallMain(wasmFile string, args ...int64) {
 
 	//b, e := json.Marshal(&types.FuncList)
 	//fmt.Println(string(b), e)
-
+	fmt.Println(wasm.GetVMemory().Malloc(44))
+	fmt.Println(wasm.GetVMemory().Malloc(44))
+	fmt.Println(wasm.GetVMemory().Malloc(444))
+	fmt.Println(wasm.GetVMemory().Malloc(44))
 	//fmt.Println(ZSt18uncaught_exceptionv(wm))
 
-	wasm.RunFunc(wm, "main")
+	wasm.RunMainFunc(wm, "main")
 
 	//HEAP32[argv >> 2] = allocateUTF8OnStack(Module["thisProgram"]);
 
