@@ -34,7 +34,6 @@ func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 	m.GLOBAL_BASE = 1024
 	m.TOTAL_STACK = HEAP_BASE(vm) - DATA_END(vm)
 	m.TOTAL_MEMORY = m.GetTotalMemory()
-	//m.STATICTOP = m.GLOBAL_BASE + 4560
 	m.STATICTOP = m.GLOBAL_BASE + DATA_END(vm)
 	m.DYNAMICTOP_PTR = m.StaticAlloc(4)
 	m.STACKTOP = m.AlignMemory(m.STATICTOP)

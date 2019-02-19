@@ -67,7 +67,8 @@ struct tm {
 func (ti *Time) Gmtime(t int64) int64 {
 	tim := binary.LittleEndian.Uint64(ti.Vm.Memory[t : t+8])
 	op := wasm.GetVMemory().Malloc(44)
-	tAll := time.Unix(int64(tim), 0)
+	tAll := time.Unix(int64(tim), 0).UTC()
+
 	p := op
 	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(tAll.Second())) //tm_sec
 	p += 4
@@ -95,6 +96,11 @@ func (ti *Time) Gmtime(t int64) int64 {
 	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(sp)) //*tm_zone
 	return op
 }
-func (*Time) Asctime(t int64) int64 {
-	return 0
+
+//char *asctime(const struct tm *timeptr)
+func (ti *Time) Asctime(t int64) int64 {
+	sz := "asctime vm not implementation"
+	sp := wasm.GetVMemory().Malloc(int64(len(sz)))
+	copy(ti.Vm.Memory[sp:sp+int64(len(sz))], []byte(sz))
+	return sp
 }
