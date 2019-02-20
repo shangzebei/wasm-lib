@@ -4,7 +4,9 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 	"time"
 	"wasmgo/types"
 	"wasmgo/wasm"
@@ -88,8 +90,13 @@ func (*StdLib) BuildEnvironment(environ int64) {
 }
 
 //void (*signal (int sig, void (*func)(int)))(int);
-func (s *StdLib) Signal(sig int64, functionp int) {
-	wasm.InvokeMethod(s.Vm, functionp, sig)
+func (s *StdLib) Signal(sig int, functionId int) {
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, syscall.Signal(sig), syscall.SIGTERM)
+	go func() {
+		<-c
+		wasm.InvokeMethod(s.Vm, functionId, int64(sig))
+	}()
 }
 
 /*struct timespec
@@ -98,6 +105,7 @@ func (s *StdLib) Signal(sig int64, functionp int) {
   long    tv_nsec;         纳秒nanoseconds
 };
 */
+
 //int nanosleep(const struct timespec *req, struct timespec *rem);
 func (s *StdLib) Nanosleep(req int64, rem int64) int32 {
 	sec := binary.LittleEndian.Uint32(s.Vm.Memory[req : req+4])
