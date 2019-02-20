@@ -21,9 +21,10 @@ func CallMain(wasmFile string, args ...int64) {
 		&lib.StdLib{},
 		&lib.Encrypt{},
 		&lib.Time{},
-		//&lib.Http{},
+		&lib.Http{},
 		&lib.SystemCall{},
 		&lib.Thread{},
+		&lib.System{},
 	)
 	input, err := ioutil.ReadFile(wasmFile)
 	if err != nil {
@@ -34,6 +35,7 @@ func CallMain(wasmFile string, args ...int64) {
 	defer func() {
 		m.CheckUnflushedContent()
 	}()
+	//fmt.Println(wm.Table[2])
 	m.Init(wm, &VMalloc{wm})
 	argc := len(args) + 1
 	argv := StackAlloc(wm, (argc+1)*4)

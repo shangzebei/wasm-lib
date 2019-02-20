@@ -99,6 +99,19 @@ func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	}
 	return ret
 }
+
+/**
+ * invoke point method
+ */
+func InvokeMethod(vm *exec.VirtualMachine, functionId int, param ...int64) int64 {
+	ret, err := CopyNewVm(vm).Run(int(vm.Table[functionId]), param...)
+	if err != nil {
+		vm.PrintStackTrace()
+		panic(err)
+	}
+	return ret
+}
+
 func GetExport(vm *exec.VirtualMachine, name string) int64 {
 	entryID, ok := vm.GetGlobalExport(name)
 	if !ok {

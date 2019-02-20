@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 	"wasmgo/types"
+	"wasmgo/wasm"
 )
 
 type StdLib struct {
@@ -87,8 +88,8 @@ func (*StdLib) BuildEnvironment(environ int64) {
 }
 
 //void (*signal (int sig, void (*func)(int)))(int);
-func (s *StdLib) Signal(sig int64, functionp int64) {
-	fmt.Println("Signal not implement")
+func (s *StdLib) Signal(sig int64, functionp int) {
+	wasm.InvokeMethod(s.Vm, functionp, sig)
 }
 
 /*struct timespec
