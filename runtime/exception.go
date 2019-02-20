@@ -3,6 +3,7 @@ package lib
 import (
 	"log"
 	"wasmgo/types"
+	"wasmgo/wasm"
 )
 
 type Exception struct {
@@ -16,10 +17,10 @@ func (e *Exception) Init() {
 }
 
 func (e *Exception) Cxa_allocate_exception(size int64) int64 {
-	return 0
+	return wasm.GetVMemory().Malloc(size)
 }
 func (e *Exception) Cxa_throw(ptr int64, typ int64, destructor int64) {
-	log.Fatalln("ptr= %d- Exception catching is disabled, this exception cannot be caught. Compile with -s DISABLE_EXCEPTION_CATCHING=0 or DISABLE_EXCEPTION_CATCHING=2 to catch.", ptr)
+	log.Fatalf("ptr= %d - Exception catching is disabled, this exception cannot be caught. Compile with -s DISABLE_EXCEPTION_CATCHING=0 or DISABLE_EXCEPTION_CATCHING=2 to catch.", ptr)
 }
 
 func (e *Exception) Cxa_uncaught_exception() int32 {
