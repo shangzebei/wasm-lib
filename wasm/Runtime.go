@@ -86,7 +86,7 @@ func RunMainFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 
 func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	entryID, ok := vm.GetFunctionExport(name)
-	aa := vm.CopyNewVm()
+	aa := CopyNewVm(vm)
 	if !ok {
 		fmt.Printf("Entry function %s not found; starting from 0.\n", name)
 		entryID = 0

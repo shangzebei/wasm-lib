@@ -21,7 +21,7 @@ func CallMain(wasmFile string, args ...int64) {
 		&lib.StdLib{},
 		&lib.Encrypt{},
 		&lib.Time{},
-		&lib.Http{},
+		//&lib.Http{},
 		&lib.SystemCall{},
 		&lib.Thread{},
 	)
