@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,5 +11,11 @@ import (
 func main() {
 	log.SetOutput(ioutil.Discard)
 	arg := os.Args
-	llvm.CallMain(arg[1])
+	_, err := os.Stat(arg[1])
+	if err == nil {
+		llvm.CallMain(arg[1])
+	} else {
+		fmt.Printf("file %s err ", arg[1])
+	}
+
 }
