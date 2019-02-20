@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/binary"
 	"fmt"
+	"log"
 	"wasmgo/types"
 )
 
@@ -34,7 +35,7 @@ func (*SystemCall) Syscall6(a int, b int) int {
 }
 
 func (*SystemCall) Cxa_atexit() {
-	fmt.Println("atexit() called, but EXIT_RUNTIME is not set, so atexits() will not be called. set EXIT_RUNTIME to 1 (see the FAQ)")
+	log.Printf("atexit() called, but EXIT_RUNTIME is not set, so atexits() will not be called. set EXIT_RUNTIME to 1 (see the FAQ)")
 }
 
 func (s *SystemCall) Syscall54(a int, b int) int {

@@ -29,6 +29,9 @@ type VmManger struct {
 var STACK_ALIGN = int64(16)
 
 func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
+	wasm.AddFunc(m, "Sbrk")
+	wasm.AddFunc(m, "Brk")
+
 	m.vm = vm
 	wasm.SetVMemory(vMem)
 	m.GLOBAL_BASE = 1024
@@ -44,8 +47,6 @@ func (m *VmManger) Init(vm *exec.VirtualMachine, vMem types.VMemory) {
 
 	WASM_CALL_CTORS(vm)
 
-	wasm.AddFunc(m, "Sbrk")
-	wasm.AddFunc(m, "Brk")
 }
 
 func (m *VmManger) GetTotalMemory() int64 {
@@ -53,12 +54,6 @@ func (m *VmManger) GetTotalMemory() int64 {
 	m.TOTAL_MEMORY = int64(total)
 	return m.TOTAL_MEMORY
 }
-
-//func (m *VmManger) StackAlloc(args ...string) {
-//	var ret = m.STATICTOP
-//	m.STATICTOP = m.STATICTOP + size + 15&-16;
-//	return ret
-//}
 
 func (m *VmManger) abortOnCannotGrowMemory() bool {
 	panic("Cannot enlarge memory arrays. Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value " + ", (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ")
