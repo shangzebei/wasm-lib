@@ -7,7 +7,7 @@ import (
 )
 
 type VMalloc struct {
-	vm *exec.VirtualMachine
+	Vm *exec.VirtualMachine
 }
 
 func StackAlloc(vm *exec.VirtualMachine, len int) int64 {
@@ -76,17 +76,17 @@ func DATA_END(vm *exec.VirtualMachine) int64 {
 }
 
 func (v *VMalloc) Malloc(size int64) int64 {
-	if v.vm == nil {
+	if v.Vm == nil {
 		log.Fatalln("error e.Vm==nil")
 	}
-	return wasm.RunFunc(v.vm, "malloc", size)
+	return wasm.RunFunc(v.Vm, "malloc", size)
 }
 
 func (v *VMalloc) Free(point int64) int64 {
-	if v.vm == nil {
+	if v.Vm == nil {
 		log.Fatalln("error e.Vm==nil")
 	}
-	return wasm.RunFunc(v.vm, "free", point)
+	return wasm.RunFunc(v.Vm, "free", point)
 }
 
 func FFLUSH(vm *exec.VirtualMachine, x int) int64 {
