@@ -1,4 +1,4 @@
-// +build linux,darwin,android
+//+build !386
 
 package main
 
