@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"wasmgo/llvm"
 )
 
 func main() {
@@ -13,8 +14,8 @@ func main() {
 	arg := os.Args
 	_, err := os.Stat(arg[1])
 	if err == nil {
-		p := LoadExecFile(arg[1])
-		InvokeMethod(p, "main")
+		p := llvm.LoadExecFile(arg[1])
+		llvm.InvokeMethod(p, "main")
 	} else {
 		fmt.Printf("file %s err ", arg[1])
 	}
