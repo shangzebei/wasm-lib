@@ -8,6 +8,8 @@ import (
 	"wasmgo/wasm"
 )
 
+var moduleList = make([]*exec.VirtualMachine, 0)
+
 func init() {
 	log.Println("........init........")
 	wasm.RegisterFunc(
@@ -25,8 +27,6 @@ func init() {
 		&lib.System{},
 	)
 }
-
-var moduleList = make([]*exec.VirtualMachine, 0)
 
 func Load(execFile string) int {
 	input, err := ioutil.ReadFile(execFile)
