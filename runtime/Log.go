@@ -2,11 +2,9 @@ package lib
 
 import (
 	"fmt"
-	"wasmgo/types"
 )
 
 type Log struct {
-	types.VMInterface
 }
 
 func (l *Log) Log_s(log string) {

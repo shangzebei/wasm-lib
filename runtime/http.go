@@ -5,43 +5,36 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"wasmgo/types"
-	"wasmgo/wasm"
 )
 
 type Http struct {
-	types.VMInterface
 }
 
 //char * http_get(char * url);
-func (h *Http) Http_get(url string) int64 {
+func (h *Http) Http_get(url string) string {
 	res, err := http.Get(url)
 	if err != nil {
-		return 0
+		return ""
 	}
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return 0
+		return ""
 	}
-	p := wasm.GetVMemory().Malloc(int64(len(b)))
-	copy(h.Vm.Memory[p:], b)
-	return p
+	return string(b)
 }
 
 //char * http_get(char * url,char *contentType,char * body);
-func (h *Http) Http_post(url string, contentType string, body string) int64 {
+func (h *Http) Http_post(url string, contentType string, body string) string {
 	fmt.Println(url, contentType, body)
 	res, err := http.Post(url, contentType, strings.NewReader(body))
 	if err != nil {
 		println(err)
-		return 0
+		return ""
 	}
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		println(err)
-		return 0
+		return ""
 	}
-	p := wasm.GetVMemory().Malloc(int64(len(b)))
-	copy(h.Vm.Memory[p:], b)
-	return p
+	return string(b)
 }

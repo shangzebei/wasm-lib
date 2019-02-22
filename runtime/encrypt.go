@@ -26,7 +26,7 @@ func (*Encrypt) Sha1(s string) string {
 	return hex.EncodeToString(r[:])
 }
 
-//char * sha1(char *);
+//char * sha256(char *);
 func (*Encrypt) Sha256(s string) string {
 	r := sha256.Sum256([]byte(s))
 	return hex.EncodeToString(r[:])

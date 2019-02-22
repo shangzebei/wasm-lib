@@ -4,7 +4,6 @@ import (
 	"math"
 	"math/rand"
 	"time"
-	"wasmgo/types"
 )
 
 //var Math_abs = Math.abs;
@@ -30,7 +29,6 @@ import (
 //var Math_trunc = Math.trunc;
 
 type Math struct {
-	types.VMInterface
 }
 
 func (*Math) Random() int64 {

@@ -188,7 +188,6 @@ func InvokeFunc(methInfo interface{}) func(vm *exec.VirtualMachine) int64 {
 			return ret[0].Int()
 		case types.STRING:
 			return SetString(ret[0].String(), vm)
-			println("no support string")
 		case types.FLOAT32, types.FLOAT64:
 			return int64(math.Float64bits(ret[0].Float()))
 		}
@@ -215,7 +214,10 @@ func SetString(s string, vm *exec.VirtualMachine) int64 {
 	msg := vm.Memory
 	p := GetVMemory().Malloc(int64(len(s)))
 	copy(msg[p:], []byte(s))
-	return 0
+	defer func() {
+		GetVMemory().Free(p)
+	}()
+	return p
 }
 
 func FirstCharLower(s string) string {
