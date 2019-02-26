@@ -7,3 +7,10 @@ wasm
 ```$shell
 EMCC_WASM_BACKEND=1 emcc  -std=c++11 -s WASM=1 main.cpp
 ```
+### progress
+- [X] File IO
+- [x] Sigal
+- [x] Time
+- [x] Math
+- [ ] Thread
+- [ ] c++11 std
