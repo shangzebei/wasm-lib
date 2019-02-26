@@ -1,11 +1,9 @@
 package lib
 
-//#include <stdio.h>
-import "C"
 import (
 	"encoding/binary"
-	"fmt"
 	"log"
+	"math"
 	"os"
 	"wasmgo/types"
 	"wasmgo/wasm"
@@ -14,12 +12,13 @@ import (
 type SystemCall struct {
 	types.VMInterface
 	types.RegInterface
-	varargs int
-	Buffers []interface{}
+	varargs int32
+	Streams map[int]*os.File
+	Buffers map[int]interface{}
 }
 
 func (s *SystemCall) Init() {
-	s.Buffers = make([]interface{}, 3)
+	s.Buffers = make(map[int]interface{})
 	s.Buffers[0] = nil
 	s.Buffers[1] = make([]byte, 0)
 	s.Buffers[2] = make([]byte, 0)
@@ -30,12 +29,25 @@ func (s *SystemCall) Init() {
 	s.Replace("Syscall146", "__syscall146")
 	s.Replace("Cxa_atexit", "__cxa_atexit")
 	s.Replace("Syscall5", "__syscall5")
+	s.Replace("Syscall145", "__syscall145")
+	s.Replace("Syscall38", "__syscall38")
+	s.Replace("Syscall10", "__syscall10")
+
+	//var FuncList = make(map[string]interface{})
+	s.Streams = make(map[int]*os.File)
+	s.Streams[1] = os.Stdout
+	s.Streams[2] = os.Stderr
+
 }
 
-//extern int __syscall6(int a,int b);
-func (*SystemCall) Syscall6(a int, b int) int {
+//close
+func (s *SystemCall) Syscall6(a int, b int) int {
 	// close
-	fmt.Printf("Syscall6 a = %d,b =%d \n", a, b)
+	err := s.Streams[a].Close()
+	if err != nil {
+		log.Println(err)
+	}
+	//fmt.Printf("Syscall6 a = %d,b =%d \n", a, b)
 	return 0
 }
 
@@ -43,65 +55,59 @@ func (*SystemCall) Cxa_atexit() {
 	log.Printf("atexit() called, but EXIT_RUNTIME is not set, so atexits() will not be called. set EXIT_RUNTIME to 1 (see the FAQ)")
 }
 
-func (s *SystemCall) Syscall54(a int, b int) int {
+//ioctl
+func (s *SystemCall) Syscall54(a int32, b int32) int32 {
 	s.varargs = b
-	// ioctl
 	//fmt.Printf("Syscall54 a = %d,b =%d \n", a, b)
 	return 0
 }
-func (s *SystemCall) Syscall140(a int, b int) int {
-	fmt.Printf("Syscall140 a = %d,b =%d \n", a, b)
+
+//llseek
+func (s *SystemCall) Syscall140(a int32, b int32) int32 {
 	s.varargs = b
-	return 0
+	stream := s.get()
+	s.get()               // NOTE: offset_high is unused - Emscripten's off_t is 32-bit
+	offset_low := s.get() //var offset = offset_low;
+	result := s.get()
+	whence := s.get()
+	//fmt.Println(stream, offset_high, offset_low, result, whence)
+	return s.llseek(stream, int64(offset_low), whence, result)
 }
 
-/*
-typedef	struct __sFILE {
+//read
+func (s *SystemCall) Syscall145(a int32, b int32) int {
+	s.varargs = b
+	stream := s.get()
+	iov := s.get()
+	iovcnt := s.get()
+	//fmt.Println(stream, iov, iovcnt)
+	var ret = 0
+	pos := iov
+	for i := 0; i < iovcnt; i++ {
+		ptr := int(binary.LittleEndian.Uint32(s.Vm.Memory[pos : pos+4]))
+		len := int(binary.LittleEndian.Uint32(s.Vm.Memory[pos+4 : pos+8]))
+		pos += 8
+		ret += s.read(stream, ptr, len)
+	}
+	return ret
+}
 
-unsigned char *_p;	 current position in (some) buffer
-int	_r;		 read space left for getc()
-int	_w;		 write space left for putc()
-short	_flags;		 flags, below; this FILE is free if 0
-short	_file;		 fileno, if Unix descriptor, else -1
-struct	__sbuf _bf;	 the buffer (at least 1 byte, if !NULL)
-int	_lbfsize;	/* 0 or -_bf._size, for inline putc
-
-/* operations
-void	*_cookie;	/* cookie passed to io functions
-int	(* _Nullable _close)(void *);
-int	(* _Nullable _read) (void *, char *, int);
-fpos_t	(* _Nullable _seek) (void *, fpos_t, int);
-int	(* _Nullable _write)(void *, const char *, int);
-
-/* separate buffer for long sequences of ungetc()
-struct	__sbuf _ub;	/* ungetc buffer
-struct __sFILEX *_extra;  additions to FILE to not break ABI
-int	_ur;		/* saved _r when _r is counting ungetc data
-
-/* tricks to meet minimum requirements even when malloc() fails
-unsigned char _ubuf[3];	/* guarantee an ungetc() buffer
-unsigned char _nbuf[1];	/* guarantee a getc() buffer
-
-/* separate buffer for fgetln() when line crosses buffer boundary
-struct	__sbuf _lb;	/* buffer for fgetln()
-
-/* Unix stdio files get aligned to block boundaries on fseek()
-int	_blksize;	/* stat.st_blksize (may be != _bf._size)
-fpos_t	_offset;	/* current lseek offset (see WARNING)
-} FILE;*/
 // open
-func (s *SystemCall) Syscall5(a int, b int) int64 {
+func (s *SystemCall) Syscall5(a int32, b int32) int64 {
 	s.varargs = b
 	fp := s.get()
 	filename := wasm.GetString(int64(fp), s.Vm)
 	flags := s.get()
 	mode := s.get()
-	file, error := os.OpenFile(filename, flags, os.FileMode(mode))
-	fmt.Println(int64(file.Fd()), error)
+	file, _ := os.OpenFile(filename, flags, os.FileMode(mode))
+	s.Streams[int(file.Fd())] = file
+	s.Buffers[int(file.Fd())] = make([]byte, 0)
+	//fmt.Println(error)
 	return int64(file.Fd())
 }
 
-func (s *SystemCall) Syscall146(a int, b int) int {
+//write
+func (s *SystemCall) Syscall146(a int32, b int32) int {
 	//fmt.Printf("Syscall146 a = %d  b =%d \n", a, b)
 	s.varargs = b
 	stream := s.get()
@@ -115,12 +121,37 @@ func (s *SystemCall) Syscall146(a int, b int) int {
 		len := int(binary.LittleEndian.Uint32(s.Vm.Memory[pos+4 : pos+8]))
 		//fmt.Printf(" ptr = %d  len =%d  \n", ptr, len)
 		for j := 0; j < len; j++ {
-			s.printChar(stream, int(s.Vm.Memory[ptr+j]))
+			s.write(stream, int(s.Vm.Memory[ptr+j]))
 		}
 		pos += 8
 		ret = ret + len
 	}
 	return ret
+}
+
+//rename
+func (s *SystemCall) Syscall38(a int32, b int32) int32 {
+	s.varargs = b
+	old_path := wasm.GetString(int64(s.get()), s.Vm)
+	new_path := wasm.GetString(int64(s.get()), s.Vm)
+	err := os.Rename(old_path, new_path)
+	if err != nil {
+		log.Println(err)
+		return -1
+	}
+	return 0
+}
+
+//remove
+func (s *SystemCall) Syscall10(a int32, b int32) int32 {
+	s.varargs = b
+	path := wasm.GetString(int64(s.get()), s.Vm)
+	err := os.Remove(path)
+	if err != nil {
+		log.Println(err)
+		return -1
+	}
+	return 0
 }
 
 func (s *SystemCall) get() int {
@@ -130,13 +161,36 @@ func (s *SystemCall) get() int {
 
 }
 
-func (s *SystemCall) printChar(stream int, curr int) {
+func (s *SystemCall) write(stream int, curr int) {
 	var buff = s.Buffers[stream].([]byte)
+	buff = append(buff, byte(curr))
 	if curr == 0 || curr == 10 {
-		fmt.Println(string(buff))
+		_, error := s.Streams[stream].Write(buff)
+		if error != nil {
+			log.Println(error)
+		}
 		buff = nil
-	} else {
-		buff = append(buff, byte(curr))
 	}
 	s.Buffers[stream] = buff
+
+}
+
+func (s *SystemCall) read(stream int, ptr int, lenght int) int {
+	b := make([]byte, lenght)
+	st := s.Streams[stream]
+	n, _ := st.Read(b)
+	copy(s.Vm.Memory[ptr:ptr+lenght], b)
+	return n
+}
+
+func (s *SystemCall) llseek(stream int, offset int64, whence int, resultPtr int) int32 {
+	ret, error := s.Streams[stream].Seek(offset, whence)
+	if error != nil {
+		log.Println(error)
+	}
+	if ret > math.MaxInt32 {
+		log.Printf("over %d", ret)
+	}
+	binary.LittleEndian.PutUint32(s.Vm.Memory[resultPtr:resultPtr+4], uint32(ret))
+	return int32(ret)
 }
