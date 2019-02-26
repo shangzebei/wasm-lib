@@ -85,6 +85,7 @@ func (*StdLib) Abort() {
 func (*StdLib) Getenv(envvar string) string {
 	return os.Getenv(envvar)
 }
+
 func (*StdLib) BuildEnvironment(environ int64) {
 	//fmt.Println(environ)
 }
