@@ -9,6 +9,11 @@ import (
 
 type Time struct {
 	types.VMInterface
+	types.RegInterface
+}
+
+func (t *Time) Init() {
+	t.Replace("ClockGetTime", "clock_gettime")
 }
 
 //long current_unix_time();
@@ -103,4 +108,17 @@ func (ti *Time) Asctime(t int64) int64 {
 	sp := wasm.GetVMemory().Malloc(int64(len(sz)))
 	copy(ti.Vm.Memory[sp:sp+int64(len(sz))], []byte(sz))
 	return sp
+}
+
+/*struct timespec {
+  time_t   tv_sec;        seconds
+  long     tv_nsec;       nanoseconds
+};*/
+//int clock_gettime(clockid_t clk_id,struct timespec *tp);
+func (t *Time) ClockGetTime(clk_id int32, tp int32) int32 {
+	pt := tp
+	binary.LittleEndian.PutUint32(t.Vm.Memory[pt:pt+4], uint32(time.Now().Unix()))
+	pt += 4
+	binary.LittleEndian.PutUint64(t.Vm.Memory[pt:pt+8], uint64(time.Now().UnixNano()))
+	return 0
 }

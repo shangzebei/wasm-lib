@@ -42,10 +42,10 @@ func LoadExecFile(execFile string) int {
 	p := Load(execFile)
 	wm := moduleList[p]
 	m := VmManger{}
+	m.Init(wm, &VMalloc{Vm: wm})
 	defer func() {
 		m.CheckUnflushedContent()
 	}()
-	m.Init(wm, &VMalloc{Vm: wm})
 	//argc := len(args) + 1
 	//argv := StackAlloc(wm, (argc+1)*4)
 	//pos := (argv >> 2) * 4

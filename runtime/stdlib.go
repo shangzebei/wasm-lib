@@ -111,7 +111,7 @@ func (s *StdLib) Signal(sig int, functionId int) {
 func (s *StdLib) Nanosleep(req int64, rem int64) int32 {
 	sec := binary.LittleEndian.Uint32(s.Vm.Memory[req : req+4])
 	req += 4
-	nanosec := binary.LittleEndian.Uint32(s.Vm.Memory[req : req+4])
+	nanosec := binary.LittleEndian.Uint64(s.Vm.Memory[req : req+8])
 	time.Sleep(time.Duration(time.Second.Nanoseconds()*int64(sec) + int64(nanosec)))
 	return 0
 }
