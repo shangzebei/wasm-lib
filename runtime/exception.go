@@ -26,3 +26,6 @@ func (e *Exception) Cxa_throw(ptr int64, typ int64, destructor int64) {
 func (e *Exception) Cxa_uncaught_exception() int32 {
 	return 0
 }
+func (*Exception) AbortStackOverflow(p int32) {
+
+}
