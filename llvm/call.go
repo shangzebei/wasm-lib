@@ -9,6 +9,7 @@ import (
 )
 
 var moduleList = make([]*exec.VirtualMachine, 0)
+var _vm VmManger
 
 func init() {
 	log.Println("........init........")
@@ -41,11 +42,9 @@ func Load(execFile string) int {
 func LoadExecFile(execFile string) int {
 	p := Load(execFile)
 	wm := moduleList[p]
-	m := VmManger{}
-	m.Init(wm, &VMalloc{Vm: wm})
-	defer func() {
-		m.CheckUnflushedContent()
-	}()
+	_vm = VmManger{}
+	_vm.Init(wm, &VMalloc{Vm: wm})
+
 	//argc := len(args) + 1
 	//argv := StackAlloc(wm, (argc+1)*4)
 	//pos := (argv >> 2) * 4
@@ -53,6 +52,9 @@ func LoadExecFile(execFile string) int {
 	return p
 }
 
-func InvokeMethod(p int, methodName string) int64 {
-	return wasm.RunMainFunc(moduleList[p], methodName)
+func InvokeMethod(p int, methodName string, param ...int64) int64 {
+	defer func() {
+		_vm.CheckUnflushedContent()
+	}()
+	return wasm.RunMainFunc(moduleList[p], methodName, param...)
 }

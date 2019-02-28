@@ -13,5 +13,6 @@ EMCC_WASM_BACKEND=1 emcc  -std=c++11 -s WASM=1 main.cpp
 - [x] Time
 - [x] Math
 - [x] http
+- [x] regex
 - [ ] Thread
 - [ ] c++11 std
