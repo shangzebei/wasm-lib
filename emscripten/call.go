@@ -1,19 +1,20 @@
-package llvm
+package emscripten
 
 import (
 	"github.com/perlin-network/life/exec"
 	"io/ioutil"
 	"wasmgo/runtime"
+	"wasmgo/types"
 	"wasmgo/wasm"
 )
 
-type LLVM struct {
+type EMVM struct {
 }
 
 var moduleList = make([]*exec.VirtualMachine, 0)
-var _vm LLVMManger
+var _vm EMscriptenManger
 
-func (llvm *LLVM) Load(execFile string) int {
+func (emvm *EMVM) Load(execFile string) int {
 	input, err := ioutil.ReadFile(execFile)
 	if err != nil {
 		panic(err)
@@ -22,28 +23,27 @@ func (llvm *LLVM) Load(execFile string) int {
 	moduleList = append(moduleList, wm)
 	return len(moduleList) - 1
 }
-
-func (llvm *LLVM) LoadExecFile(execFile string) int {
-	_vm = LLVMManger{}
-	p := llvm.Load(execFile)
-	wm := moduleList[p]
-	_vm.Init(wm, &VMalloc{Vm: wm})
-
+func (emvm *EMVM) LoadExecFile(execFile string) int {
+	_vm = EMscriptenManger{}
+	var p int
+	_vm.Init(func() *exec.VirtualMachine {
+		p = emvm.Load(execFile)
+		wm := moduleList[p]
+		return wm
+	})
 	//argc := len(args) + 1
 	//argv := StackAlloc(wm, (argc+1)*4)
 	//pos := (argv >> 2) * 4
 	//copy([]byte("./this.program"), wm.Memory[pos:pos])
 	return p
 }
-
-func (llvm *LLVM) InvokeMethod(p int, methodName string, param ...int64) int64 {
+func (emvm *EMVM) InvokeMethod(p int, methodName string, param ...int64) int64 {
 	defer func() {
-		_vm.CheckUnflushedContent()
+		//_vm.CheckUnflushedContent()
 	}()
 	return wasm.RunMainFunc(moduleList[p], methodName, param...)
 }
-
-func (llvm *LLVM) Init() {
+func (emvm *EMVM) Init() {
 	wasm.RegisterFunc(
 		&lib.Exception{},
 		&lib.Log{},
@@ -54,7 +54,7 @@ func (llvm *LLVM) Init() {
 		&lib.Encrypt{},
 		&lib.Time{},
 		&lib.Http{},
-		&lib.SystemCall{},
+		&lib.SystemCall{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"__": "___"}}},
 		&lib.Thread{},
 		&lib.System{},
 	)

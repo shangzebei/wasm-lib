@@ -3,19 +3,23 @@
 package main
 
 import "C"
-import "wasmgo/llvm"
+import (
+	"wasmgo/types"
+)
+
+var vm types.VM
 
 //export load
 func load(execFile string) int {
-	return llvm.Load(execFile)
+	return vm.Load(execFile)
 }
 
 //export loadExecFile
 func loadExecFile(execFile string) int {
-	return llvm.LoadExecFile(execFile)
+	return vm.LoadExecFile(execFile)
 }
 
 //export invokeMethod
 func invokeMethod(p int, methodName string) int64 {
-	return llvm.InvokeMethod(p, methodName)
+	return vm.InvokeMethod(p, methodName)
 }

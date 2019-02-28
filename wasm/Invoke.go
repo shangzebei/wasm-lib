@@ -82,12 +82,16 @@ func RegFunc(ins interface{}) {
 		}
 		m := GetMethodMeta(ins, method)
 		orgMethodName := m.MethodName
-		if IsInterface(ins, types.RegInterface{}) {
+		if IsInterface(ins, types.RegInterface{}) { //reg
 			get, _ := fooType.MethodByName("Get")
 			rem := get.Func.Call([]reflect.Value{reflect.ValueOf(ins), reflect.ValueOf(m.MethodName)})
-			if len(rem) != 0 && rem[0].String() != "" {
-				orgMethodName = rem[0].String()
+			replaceSymbol := reflect.ValueOf(ins).Elem().FieldByName("ReplaceSymbol").Interface().(map[string]string)
+			for key, value := range replaceSymbol {
+				if len(rem) != 0 && rem[0].String() != "" {
+					orgMethodName = strings.ReplaceAll(rem[0].String(), key, value)
+				}
 			}
+
 		}
 		types.FuncList[FirstCharLower(orgMethodName)] = m
 

@@ -45,7 +45,8 @@ type VMInterface struct {
  */
 type RegInterface struct {
 	RegInterface_de0f4ef1220c860d1a3708f94a5a7da1 int
-	RePMap                                        map[string]string
+	replaceMethod                                 map[string]string
+	ReplaceSymbol                                 map[string]string
 }
 
 /**
@@ -74,14 +75,21 @@ type VMemory interface {
  * get the real func,by the runtime
  */
 func (r *RegInterface) Get(name string) string {
-	return r.RePMap[name]
+	return r.replaceMethod[name]
 }
 
 func (r *RegInterface) Replace(a string, b string) {
-	if r.RePMap == nil {
-		r.RePMap = make(map[string]string)
+	if r.replaceMethod == nil {
+		r.replaceMethod = make(map[string]string)
 	}
-	r.RePMap[a] = b
+	r.replaceMethod[a] = b
+}
+
+type VM interface {
+	Init()
+	Load(execFile string) int
+	LoadExecFile(execFile string) int
+	InvokeMethod(p int, methodName string, param ...int64) int64
 }
 
 /**

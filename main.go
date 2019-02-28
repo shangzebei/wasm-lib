@@ -5,7 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"wasmgo/llvm"
+	"wasmgo/emscripten"
+	"wasmgo/types"
 )
 
 func main() {
@@ -18,8 +19,10 @@ func main() {
 	arg := os.Args
 	_, err := os.Stat(arg[1])
 	if err == nil {
-		p := llvm.LoadExecFile(arg[1])
-		llvm.InvokeMethod(p, "main")
+		var vm types.VM = &emscripten.EMVM{}
+		vm.Init()
+		p := vm.LoadExecFile(arg[1])
+		vm.InvokeMethod(p, "main")
 	} else {
 		fmt.Printf("file %s err ", arg[1])
 	}
