@@ -15,3 +15,14 @@ func AllocBytes(bytes []byte, vm *exec.VirtualMachine) int64 {
 	copy(vm.Memory[p:int(p)+l], bytes)
 	return p
 }
+
+/**
+ *
+ */
+func CheckIFElse(condition int64, defalt int64) int64 {
+	if condition <= 0 {
+		return defalt
+	} else {
+		return condition
+	}
+}

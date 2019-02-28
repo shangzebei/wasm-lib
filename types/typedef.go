@@ -88,5 +88,6 @@ func (r *RegInterface) Replace(a string, b string) {
  * glob funList
  */
 var FuncList = make(map[string]interface{})
+var GlobalList = make(map[string]interface{})
 var InstanceList = make(map[string]interface{})
 var PreFuncList = make(map[string]interface{})

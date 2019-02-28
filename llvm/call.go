@@ -9,7 +9,7 @@ import (
 )
 
 var moduleList = make([]*exec.VirtualMachine, 0)
-var _vm VmManger
+var _vm LLVMManger
 
 func init() {
 	log.Println("........init........")
@@ -26,6 +26,7 @@ func init() {
 		&lib.SystemCall{},
 		&lib.Thread{},
 		&lib.System{},
+		//&emscripten.EMSCriptenFun{},
 	)
 }
 
@@ -40,9 +41,9 @@ func Load(execFile string) int {
 }
 
 func LoadExecFile(execFile string) int {
+	_vm = LLVMManger{}
 	p := Load(execFile)
 	wm := moduleList[p]
-	_vm = VmManger{}
 	_vm.Init(wm, &VMalloc{Vm: wm})
 
 	//argc := len(args) + 1

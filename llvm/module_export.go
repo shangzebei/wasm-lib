@@ -15,15 +15,23 @@ func StackAlloc(vm *exec.VirtualMachine, len int) int64 {
 }
 
 func TOTAL_STACK(vm *exec.VirtualMachine) int64 {
-	return wasm.GetExport(vm, "TOTAL_STACK")
+	p, ok := wasm.GetExport(vm, "TOTAL_STACK")
+	if ok {
+		return p
+	}
+	return -1
 }
 
 func TOTAL_MEMORY(vm *exec.VirtualMachine) int64 {
-	return wasm.GetExport(vm, "TOTAL_MEMORY")
+	p, ok := wasm.GetExport(vm, "TOTAL_MEMORY")
+	if ok {
+		return p
+	}
+	return -1
 }
 
 func WASM_CALL_CTORS(vm *exec.VirtualMachine) {
-	wasm.RunMainFunc(vm, "__wasm_call_ctors")
+	wasm.RunMainFunc(vm, "__post_instantiate")
 }
 
 //(export "dynCall_vi" (func $1530))
@@ -68,11 +76,19 @@ func DYNCALL_VII(vm *exec.VirtualMachine, p int64, a int64, b int64) {
 }
 
 func HEAP_BASE(vm *exec.VirtualMachine) int64 {
-	return wasm.GetExport(vm, "__heap_base")
+	p, ok := wasm.GetExport(vm, "__heap_base")
+	if ok {
+		return p
+	}
+	return -1
 }
 
 func DATA_END(vm *exec.VirtualMachine) int64 {
-	return wasm.GetExport(vm, "__data_end")
+	p, ok := wasm.GetExport(vm, "__data_end")
+	if ok {
+		return p
+	}
+	return -1
 }
 
 func (v *VMalloc) Malloc(size int64) int64 {
@@ -96,3 +112,5 @@ func FFLUSH(vm *exec.VirtualMachine, x int) int64 {
 func ZSt18uncaught_exceptionv(vm *exec.VirtualMachine) int64 {
 	return wasm.RunFunc(vm, "_ZSt18uncaught_exceptionv")
 }
+
+/////////////////////////////////////////////////////////////////////////////
