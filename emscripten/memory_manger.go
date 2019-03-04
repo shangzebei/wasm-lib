@@ -8,6 +8,7 @@ import (
 )
 
 type EMscriptenManger struct {
+	vm             *exec.VirtualMachine //
 	STATIC_BASE    int64
 	STACK_BASE     int64
 	STACKTOP       int64
@@ -15,6 +16,7 @@ type EMscriptenManger struct {
 	DYNAMIC_BASE   int64
 	DYNAMICTOP_PTR int64
 	TOTAL_STACK    int64
+	TOTAL_MEMORY   int64
 }
 
 func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
@@ -35,8 +37,14 @@ func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
 	types.GlobalList["DYNAMICTOP_PTR"] = em.DYNAMICTOP_PTR
 
 	wasm.SetVMemory(&llvm.VMalloc{})
-	vm := f()
+	em.vm = f()
 
-	GlobalCtors(vm)
+	GlobalCtors(em.vm)
 
+}
+
+func (m *EMscriptenManger) GetTotalMemory() int64 {
+	total := m.vm.Config.DefaultTableSize * m.vm.Config.DefaultMemoryPages
+	m.TOTAL_MEMORY = int64(total)
+	return m.TOTAL_MEMORY
 }

@@ -23,6 +23,7 @@ func (emvm *EMVM) Load(execFile string) int {
 	moduleList = append(moduleList, wm)
 	return len(moduleList) - 1
 }
+
 func (emvm *EMVM) LoadExecFile(execFile string) int {
 	_vm = EMscriptenManger{}
 	var p int
@@ -37,12 +38,14 @@ func (emvm *EMVM) LoadExecFile(execFile string) int {
 	//copy([]byte("./this.program"), wm.Memory[pos:pos])
 	return p
 }
+
 func (emvm *EMVM) InvokeMethod(p int, methodName string, param ...int64) int64 {
 	defer func() {
 		//_vm.CheckUnflushedContent()
 	}()
 	return wasm.RunMainFunc(moduleList[p], methodName, param...)
 }
+
 func (emvm *EMVM) Init() {
 	wasm.RegisterFunc(
 		&lib.Exception{},
@@ -50,12 +53,18 @@ func (emvm *EMVM) Init() {
 		&lib.Math{},
 		&lib.MemoryInterface{},
 		&lib.String{},
-		&lib.StdLib{},
+		&lib.StdLib{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"__buildEnvironment": "___buildEnvironment"}}}, //__buildEnvironment
 		&lib.Encrypt{},
 		&lib.Time{},
 		&lib.Http{},
 		&lib.SystemCall{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"__": "___"}}},
 		&lib.Thread{},
 		&lib.System{},
+
+		&EMSCriptenFun{},
 	)
+
+	//b, _ := json.Marshal(&types.FuncList)
+	//fmt.Println(string(b))
+
 }
