@@ -37,6 +37,7 @@ func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
 	types.GlobalList["DYNAMICTOP_PTR"] = em.DYNAMICTOP_PTR
 
 	wasm.SetVMemory(&llvm.VMalloc{})
+
 	em.vm = f()
 
 	GlobalCtors(em.vm)

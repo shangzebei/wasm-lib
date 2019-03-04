@@ -22,7 +22,7 @@ func main() {
 		var vm types.VM = &emscripten.EMVM{}
 		vm.Init()
 		p := vm.LoadExecFile(arg[1])
-		vm.InvokeMethod(p, "main")
+		vm.InvokeMethod(p, "_main")
 	} else {
 		fmt.Printf("file %s err ", arg[1])
 	}
