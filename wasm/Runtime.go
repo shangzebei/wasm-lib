@@ -35,12 +35,12 @@ func (r *Resolver) ResolveGlobal(module, field string) int64 {
 		if types.GlobalList[field] != nil {
 			return types.GlobalList[field].(int64)
 		} else {
-			fmt.Printf("env unknown field: %s\n", field)
+			log.Printf("env unknown field: %s\n", field)
 		}
 	case "global":
 		switch field {
 		default:
-			fmt.Printf("Global unknown field: %s\n", field)
+			log.Printf("Global unknown field: %s\n", field)
 		}
 
 	default:
