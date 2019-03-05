@@ -16,3 +16,18 @@ EMCC_WASM_BACKEND=1 emcc  -std=c++11 -s WASM=1 main.cpp
 - [x] regex
 - [ ] Thread
 - [ ] c++11 std
+
+### how to use
+```$shell
+➜  wasmgo git:(master) ✗ ./wasmgo                                                                   
+  -f string
+        wasm file name 
+  -n string
+        wasm method name (default "_main")
+  -v    open debug mode (-v open)
+
+```
+### eg.
+```$shell
+   ./wasmgo -f /Users/shang/Desktop/code/CoinIDLib/build/core.wasm -n _main -v
+```
