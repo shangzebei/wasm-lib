@@ -2,7 +2,7 @@ package emscripten
 
 import (
 	"github.com/perlin-network/life/exec"
-	"wasmgo/llvm"
+	"log"
 	"wasmgo/types"
 	"wasmgo/wasm"
 )
@@ -17,6 +17,10 @@ type EMscriptenManger struct {
 	DYNAMICTOP_PTR int64
 	TOTAL_STACK    int64
 	TOTAL_MEMORY   int64
+}
+
+type VMImpl struct {
+	Vm *exec.VirtualMachine
 }
 
 func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
@@ -36,9 +40,9 @@ func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
 	types.GlobalList["tempDoublePtr"] = int64(22560)
 	types.GlobalList["DYNAMICTOP_PTR"] = em.DYNAMICTOP_PTR
 
-	wasm.SetVMemory(&llvm.VMalloc{})
-
 	em.vm = f()
+
+	wasm.SetVMemory(&VMImpl{Vm: em.vm})
 
 	GlobalCtors(em.vm)
 
@@ -48,4 +52,18 @@ func (m *EMscriptenManger) GetTotalMemory() int64 {
 	total := m.vm.Config.DefaultTableSize * m.vm.Config.DefaultMemoryPages
 	m.TOTAL_MEMORY = int64(total)
 	return m.TOTAL_MEMORY
+}
+
+func (v *VMImpl) Malloc(size int64) int64 {
+	if v.Vm == nil {
+		log.Fatalln("error e.Vm==nil")
+	}
+	return wasm.RunFunc(v.Vm, "_malloc", size)
+}
+
+func (v *VMImpl) Free(point int64) int64 {
+	if v.Vm == nil {
+		log.Fatalln("error e.Vm==nil")
+	}
+	return wasm.RunFunc(v.Vm, "_free", point)
 }

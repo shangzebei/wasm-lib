@@ -2,6 +2,7 @@ package util
 
 import (
 	"github.com/perlin-network/life/exec"
+	"strconv"
 	"wasmgo/wasm"
 )
 
@@ -25,4 +26,17 @@ func CheckIFElse(condition int64, defalt int64) int64 {
 	} else {
 		return condition
 	}
+}
+
+func DisposeParam(args []string, machine *exec.VirtualMachine) []int64 {
+	var re = make([]int64, len(args))
+	for index, value := range args {
+		v, e := strconv.ParseInt(value, 10, 64)
+		if e != nil {
+			re[index] = AllocChars(value, machine)
+		} else {
+			re[index] = v
+		}
+	}
+	return re
 }

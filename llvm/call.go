@@ -4,6 +4,7 @@ import (
 	"github.com/perlin-network/life/exec"
 	"io/ioutil"
 	"wasmgo/runtime"
+	"wasmgo/util"
 	"wasmgo/wasm"
 )
 
@@ -36,11 +37,12 @@ func (llvm *LLVM) LoadExecFile(execFile string) int {
 	return p
 }
 
-func (llvm *LLVM) InvokeMethod(p int, methodName string, param ...int64) int64 {
+func (llvm *LLVM) InvokeMethod(p int, methodName string, param ...string) int64 {
 	defer func() {
 		_vm.CheckUnflushedContent()
 	}()
-	return wasm.RunMainFunc(moduleList[p], methodName, param...)
+
+	return wasm.RunMainFunc(moduleList[p], methodName, util.DisposeParam(param, moduleList[p])...)
 }
 
 func (llvm *LLVM) Init() {

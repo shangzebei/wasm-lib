@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"wasmgo/runtime"
 	"wasmgo/types"
+	"wasmgo/util"
 	"wasmgo/wasm"
 )
 
@@ -39,11 +40,11 @@ func (emvm *EMVM) LoadExecFile(execFile string) int {
 	return p
 }
 
-func (emvm *EMVM) InvokeMethod(p int, methodName string, param ...int64) int64 {
+func (emvm *EMVM) InvokeMethod(p int, methodName string, param ...string) int64 {
 	defer func() {
 		//_vm.CheckUnflushedContent()
 	}()
-	return wasm.RunMainFunc(moduleList[p], methodName, param...)
+	return wasm.RunMainFunc(moduleList[p], methodName, util.DisposeParam(param, moduleList[p])...)
 }
 
 func (emvm *EMVM) Init() {

@@ -82,7 +82,7 @@ func RunMainFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	ret, err := vm.Run(entryID, params...)
 
 	if err != nil {
-		vm.PrintStackTrace()
+		//vm.PrintStackTrace()
 		panic(err)
 	}
 	return ret
@@ -98,7 +98,7 @@ func RunFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 	ret, err := aa.Run(entryID, params...)
 
 	if err != nil {
-		vm.PrintStackTrace()
+		//vm.PrintStackTrace()
 		panic(err)
 	}
 	return ret

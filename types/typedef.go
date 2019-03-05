@@ -89,7 +89,7 @@ type VM interface {
 	Init()
 	Load(execFile string) int
 	LoadExecFile(execFile string) int
-	InvokeMethod(p int, methodName string, param ...int64) int64
+	InvokeMethod(p int, methodName string, param ...string) int64
 }
 
 /**
