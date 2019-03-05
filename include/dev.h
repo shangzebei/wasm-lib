@@ -1,4 +1,4 @@
-#ifdef __cplusplus
+#define WASM_EXPORT extern "C"
 extern "C"
 {
 #endif

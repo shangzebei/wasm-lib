@@ -25,7 +25,8 @@ func main() {
 		var vm types.VM = &emscripten.EMVM{}
 		vm.Init()
 		p := vm.LoadExecFile(*file)
-		vm.InvokeMethod(p, *name, args...)
+		result := vm.InvokeMethod(p, *name, args...)
+		fmt.Printf("result= %d \n", result)
 	} else {
 		flag.PrintDefaults()
 	}
