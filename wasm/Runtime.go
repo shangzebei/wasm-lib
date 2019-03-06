@@ -78,7 +78,6 @@ func RunMainFunc(vm *exec.VirtualMachine, name string, params ...int64) int64 {
 		fmt.Printf("Entry function %s not found\n", name)
 		return 0
 	}
-
 	ret, err := vm.Run(entryID, params...)
 
 	if err != nil {

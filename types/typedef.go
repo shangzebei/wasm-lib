@@ -92,6 +92,29 @@ type VM interface {
 	InvokeMethod(p int, methodName string, param ...string) int64
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * for plugin
+ *
+ *  func Init(plugin *types.VMPlugin) {
+ *	     plugin.Reg("Hello")
+ *  }
+ *
+ */
+type VMPlugin struct {
+	regMethod []string
+	PlugName  string
+	Version   string
+}
+
+func (r *VMPlugin) Reg(name string) {
+	r.regMethod = append(r.regMethod, name)
+}
+
+func (r *VMPlugin) GetRegs() []string {
+	return r.regMethod
+}
+
 /**
  * glob funList
  */
