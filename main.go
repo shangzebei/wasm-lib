@@ -11,6 +11,7 @@ import (
 
 //go:generate go build -buildmode=plugin /Users/shang/go/src/wasmgo/plugin/network
 //go:generate go build
+//go:generate go build -buildmode=c-archive -o /Users/shang/Documents/wasm-java/lib/wasm.a
 
 func main() {
 

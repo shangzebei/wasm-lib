@@ -11,23 +11,23 @@ import (
 
 var vm types.VM = &emscripten.EMVM{}
 
-//export load
-func load(execFile string) int {
+//export vmLoad
+func vmLoad(execFile string) int {
 	return vm.Load(execFile)
 }
 
-//export loadExecFile
-func loadExecFile(execFile string) int {
+//export vmLoadExecFile
+func vmLoadExecFile(execFile string) int {
 	return vm.LoadExecFile(execFile)
 }
 
-//export invokeMethod
-func invokeMethod(p int, methodName string) int64 {
-	return vm.InvokeMethod(p, methodName)
+//export vmInvokeMethod
+func vmInvokeMethod(p int, methodName string, param []string) int64 {
+	return vm.InvokeMethod(p, methodName, param...)
 }
 
-//export setPlugPath
-func setPlugPath(path string) {
+//export setVMPlugPath
+func setVMPlugPath(path string) {
 	wasm.SetPlugPath(path)
 }
 
