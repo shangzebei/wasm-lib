@@ -4,11 +4,12 @@ package main
 
 import "C"
 import (
+	"wasmgo/emscripten"
 	"wasmgo/types"
 	"wasmgo/wasm"
 )
 
-var vm types.VM
+var vm types.VM = &emscripten.EMVM{}
 
 //export load
 func load(execFile string) int {

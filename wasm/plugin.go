@@ -61,7 +61,7 @@ func LoadPlugin(file string) {
 		for _, value := range regs {
 			ins.Pls[vmPlug.PlugName].funcPl[value] = p
 		}
-		log.Printf("load path %s success ! Name= %s \n", file, vmPlug.PlugName)
+		log.Printf("load path %s success ! name= %s \n", file, vmPlug.PlugName)
 	}
 
 }
