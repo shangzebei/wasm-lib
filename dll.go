@@ -5,6 +5,7 @@ package main
 import "C"
 import (
 	"wasmgo/types"
+	"wasmgo/wasm"
 )
 
 var vm types.VM
@@ -22,4 +23,9 @@ func loadExecFile(execFile string) int {
 //export invokeMethod
 func invokeMethod(p int, methodName string) int64 {
 	return vm.InvokeMethod(p, methodName)
+}
+
+//export setPlugPath
+func setPlugPath(path string) {
+	wasm.SetPlugPath(path)
 }

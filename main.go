@@ -9,7 +9,11 @@ import (
 	"wasmgo/types"
 )
 
+//go:generate go build -buildmode=plugin /Users/shang/go/src/wasmgo/plugin/network
+//go:generate go build
+
 func main() {
+
 	name := flag.String("n", "_main", "wasm method name")
 	file := flag.String("f", "", "wasm file name ")
 	debug := flag.Bool("v", false, "open debug mode (-v open)")

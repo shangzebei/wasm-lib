@@ -20,7 +20,7 @@ type plugs struct {
 	Pls map[string]*PlugFactory
 }
 
-const WASM_LIB = "/Users/shang/go/src/wasmgo/"
+var WASM_LIB = "/Users/shang/go/src/wasmgo/"
 
 func init() {
 	env := os.Getenv("WASM_LIB")
@@ -29,6 +29,10 @@ func init() {
 	}
 	log.Printf("WASM_LIB = %s \n", env)
 	loadSystem(env)
+}
+
+func SetPlugPath(env string) {
+	WASM_LIB = env
 }
 
 func PlugInstants(plugName string) *PlugFactory {
@@ -83,6 +87,7 @@ func (plu *PlugFactory) Call(methodName string, param ...interface{}) []interfac
 		for _, value := range v {
 			rParam = append(rParam, value.Interface())
 		}
+		log.Printf("invoke plugin method %s return %s \n", methodName, rParam)
 		return rParam
 	}
 	return nil

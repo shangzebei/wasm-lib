@@ -90,6 +90,8 @@ func RegFunc(ins interface{}) {
 				for key, value := range replaceSymbol {
 					if len(rem) != 0 && rem[0].String() != "" {
 						orgMethodName = strings.ReplaceAll(rem[0].String(), key, value)
+					} else {
+						orgMethodName = strings.ReplaceAll(orgMethodName, key, value)
 					}
 				}
 			} else {
@@ -231,10 +233,12 @@ func SetString(s string, vm *exec.VirtualMachine) int64 {
 }
 
 func FirstCharLower(s string) string {
+
 	if "" == s {
 		log.Fatalf("err s %s", s)
 	}
-	return strings.ToLower(s[0:1]) + s[1:]
+	//return strings.ToLower(s[0:1]) + s[1:]
+	return strings.ToLower(s)
 }
 func FirstCharUpper(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]

@@ -57,7 +57,7 @@ func (emvm *EMVM) Init() {
 		&lib.StdLib{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"__buildEnvironment": "___buildEnvironment"}}}, //__buildEnvironment
 		&lib.Encrypt{},
 		&lib.Time{},
-		&lib.Http{},
+		&lib.Http{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"Http_get": "_Http_get"}}},
 		&lib.SystemCall{RegInterface: types.RegInterface{ReplaceSymbol: map[string]string{"__": "___"}}},
 		&lib.Thread{},
 		&lib.System{},
