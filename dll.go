@@ -30,3 +30,8 @@ func invokeMethod(p int, methodName string) int64 {
 func setPlugPath(path string) {
 	wasm.SetPlugPath(path)
 }
+
+//export initVM
+func initVM() {
+	vm.Init()
+}
