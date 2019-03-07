@@ -38,7 +38,7 @@ func initVM() {
 	vm.Init()
 }
 
-//export setDebug
+//export setVmDebug
 func setVmDebug(enable bool) {
 	if !enable {
 		log.SetOutput(ioutil.Discard)

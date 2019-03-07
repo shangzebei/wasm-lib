@@ -79,6 +79,8 @@ extern void setVMPlugPath(GoString p0);
 
 extern void initVM();
 
+extern void setVmDebug(GoUint8 p0);
+
 #ifdef __cplusplus
 }
 #endif
