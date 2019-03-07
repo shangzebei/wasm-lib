@@ -10,5 +10,5 @@ func TestPlugin(t *testing.T) {
 }
 
 func TestLoadSystem(t *testing.T) {
-	//loadSystem()
+
 }

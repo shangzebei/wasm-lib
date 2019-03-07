@@ -237,9 +237,15 @@ func FirstCharLower(s string) string {
 	if "" == s {
 		log.Fatalf("err s %s", s)
 	}
-	//return strings.ToLower(s[0:1]) + s[1:]
-	return strings.ToLower(s)
+	index := strings.LastIndex(s, "_")
+	if index == -1 {
+		return strings.ToLower(s[0:1]) + s[1:]
+	} else {
+		return strings.ToLower(s[0:index]) + s[index:]
+	}
+
 }
+
 func FirstCharUpper(s string) string {
 	return strings.ToUpper(s[0:1]) + s[1:]
 }
