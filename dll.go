@@ -4,6 +4,8 @@ package main
 
 import "C"
 import (
+	"io/ioutil"
+	"log"
 	"wasmgo/emscripten"
 	"wasmgo/types"
 	"wasmgo/wasm"
@@ -34,4 +36,12 @@ func setVMPlugPath(path string) {
 //export initVM
 func initVM() {
 	vm.Init()
+}
+
+//export setDebug
+func setVmDebug(enable bool) {
+	if !enable {
+		log.SetOutput(ioutil.Discard)
+	}
+
 }
