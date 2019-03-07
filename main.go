@@ -9,9 +9,9 @@ import (
 	"wasmgo/types"
 )
 
-//go:generate go build -buildmode=plugin /Users/shang/go/src/wasmgo/plugin/network
+//go:generate go build -buildmode=plugin -o /Users/shang/go/src/wasmgo/build/darwin/network.so /Users/shang/go/src/wasmgo/plugin/network
 //go:generate go build
-//go:generate go build -buildmode=c-archive -o /Users/shang/Documents/wasm-java/lib/wasm.a
+//go:generate go build -buildmode=c-archive -o /Users/shang/go/src/wasmgo/build/darwin/wasm.a
 
 func main() {
 
