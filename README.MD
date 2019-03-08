@@ -31,3 +31,8 @@ EMCC_WASM_BACKEND=1 emcc  -std=c++11 -s WASM=1 main.cpp
 ```$shell
    ./wasmgo -f /Users/shang/Desktop/code/CoinIDLib/build/core.wasm -n _main -v
 ```
+## windows build cgo
+```bash
+1. install gcc-5.1.0-tdm64-1-core.zip #set to path
+2. install Cygwin # install make 
+```
