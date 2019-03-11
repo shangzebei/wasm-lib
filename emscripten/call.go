@@ -1,6 +1,7 @@
 package emscripten
 
 import (
+	"fmt"
 	"github.com/perlin-network/life/exec"
 	"io/ioutil"
 	"wasmgo/runtime"
@@ -16,6 +17,10 @@ var moduleList = make([]*exec.VirtualMachine, 0)
 var _vm EMscriptenManger
 
 func (emvm *EMVM) Load(execFile string) int {
+	if !util.Exists(execFile) {
+		fmt.Println("file not exists! ")
+		return 0
+	}
 	input, err := ioutil.ReadFile(execFile)
 	if err != nil {
 		panic(err)

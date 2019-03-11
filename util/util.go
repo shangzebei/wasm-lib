@@ -2,6 +2,7 @@ package util
 
 import (
 	"github.com/perlin-network/life/exec"
+	"os"
 	"strconv"
 	"wasmgo/wasm"
 )
@@ -39,4 +40,14 @@ func DisposeParam(args []string, machine *exec.VirtualMachine) []int64 {
 		}
 	}
 	return re
+}
+
+// Exists reports whether the named file or directory exists.
+func Exists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
 }
