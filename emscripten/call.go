@@ -1,6 +1,7 @@
 package emscripten
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/perlin-network/life/exec"
 	"io/ioutil"
@@ -70,7 +71,7 @@ func (emvm *EMVM) Init() {
 		&EMSCriptenFun{},
 	)
 
-	//b, _ := json.Marshal(&types.FuncList)
-	//fmt.Println(string(b))
+	b, _ := json.Marshal(&types.FuncList)
+	fmt.Println(string(b))
 
 }

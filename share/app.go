@@ -1,6 +1,8 @@
 package share
 
 import (
+	"io/ioutil"
+	"log"
 	"wasmgo/emscripten"
 	"wasmgo/types"
 	"wasmgo/wasm"
@@ -24,6 +26,11 @@ func SetVMPlugPath(path string) {
 	wasm.SetPlugPath(path)
 }
 
+func SetDebug(enable bool) {
+	if !enable {
+		log.SetOutput(ioutil.Discard)
+	}
+}
 func InitVM() {
 	vm.Init()
 }

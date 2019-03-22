@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/binary"
 	"github.com/perlin-network/life/exec"
 	"os"
 	"strconv"
@@ -50,4 +51,12 @@ func Exists(name string) bool {
 		}
 	}
 	return true
+}
+
+func Put32(bytes []byte, p int64, value uint32) {
+	binary.LittleEndian.PutUint32(bytes[p:p+4], value)
+}
+
+func Put64(bytes []byte, p int64, value uint64) {
+	binary.LittleEndian.PutUint64(bytes[p:p+8], value)
 }

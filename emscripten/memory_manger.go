@@ -4,6 +4,7 @@ import (
 	"github.com/perlin-network/life/exec"
 	"log"
 	"wasmgo/types"
+	"wasmgo/util"
 	"wasmgo/wasm"
 )
 
@@ -26,11 +27,11 @@ type VMImpl struct {
 func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
 
 	em.STATIC_BASE = 1024
-	em.STACK_BASE = 22576
+	em.STACK_BASE = 39120
 	em.STACKTOP = em.STACK_BASE
-	em.STACK_MAX = 5265456
-	em.DYNAMIC_BASE = 5265456
-	em.DYNAMICTOP_PTR = 22320
+	em.STACK_MAX = 5282000
+	em.DYNAMIC_BASE = 5282000
+	em.DYNAMICTOP_PTR = 38864
 	em.TOTAL_STACK = 5242880
 
 	//assert(STACK_BASE % 16 === 0, 'stack must start aligned');
@@ -43,6 +44,10 @@ func (em *EMscriptenManger) Init(f func() *exec.VirtualMachine) {
 	em.vm = f()
 
 	wasm.SetVMemory(&VMImpl{Vm: em.vm})
+
+	util.Put32(em.vm.Memory, 0, 0x63736d65)
+
+	util.Put32(em.vm.Memory, em.DYNAMICTOP_PTR, uint32(em.STACK_BASE))
 
 	GlobalCtors(em.vm)
 

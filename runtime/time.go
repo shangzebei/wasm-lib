@@ -13,7 +13,9 @@ type Time struct {
 }
 
 func (t *Time) Init() {
-	t.Replace("ClockGetTime", "clock_gettime")
+	t.Replace("ClockGetTime", "_clock_gettime")
+	t.Replace("Gmtime", "_gmtime")
+	t.Replace("Time", "_time")
 }
 
 //long current_unix_time();
@@ -85,7 +87,7 @@ func (ti *Time) Gmtime(t int64) int64 {
 	p += 4
 	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(tAll.Month())) //tm_mon
 	p += 4
-	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(tAll.Year())) //tm_year
+	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(tAll.Year()-1900)) //tm_year
 	p += 4
 	binary.LittleEndian.PutUint32(ti.Vm.Memory[p:p+4], uint32(tAll.Weekday())) //tm_wday
 	p += 4
